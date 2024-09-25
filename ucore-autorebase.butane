@@ -7,6 +7,24 @@ passwd:
         - AAAAC3NzaC1lZDI1NTE5AAAAIM3RN4MoqPoot2AafKe+yZ3hzpubInMnVwKvLGo1TD32
       password_hash: $y$j9T$DqkwcY33CbPGjlpMc5n62.$dWNOvnSoZD6PbmhCg54M9aKR4M63/hSQiD61vXa/h5.
 storage:
+  disks:
+    - device: /dev/vda  # Adjust to your actual disk device
+      partitions:
+        - label: root
+          number: 1
+          size_mib: 8192  # Size of the root partition in MiB, adjust as needed
+        - label: var
+          number: 2
+          size_mib: 4096  # Size of the /var partition in MiB, adjust as needed
+  filesystems:
+    - path: /
+      device: /dev/disk/by-partlabel/root
+      format: xfs
+      label: root
+    - path: /var
+      device: /dev/disk/by-partlabel/var
+      format: xfs
+      label: var
   directories:
     - path: /etc/ucore-autorebase
       mode: 0754
