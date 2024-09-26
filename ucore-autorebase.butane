@@ -12,10 +12,10 @@ storage:
       partitions:
         - label: root
           number: 1
-          size_mib: 8192  # Size of the root partition in MiB, adjust as needed
+          size_mib: 12000  # Size of the root partition in MiB, adjust as needed
         - label: var
           number: 2
-          size_mib: 4096  # Size of the /var partition in MiB, adjust as needed
+          size_mib: 0  # Size of the /var partition in MiB, adjust as needed
   filesystems:
     - path: /
       device: /dev/disk/by-partlabel/root
@@ -23,7 +23,7 @@ storage:
       label: root
     - path: /var
       device: /dev/disk/by-partlabel/var
-      format: xfs
+      format: ext4
       label: var
   directories:
     - path: /etc/ucore-autorebase
