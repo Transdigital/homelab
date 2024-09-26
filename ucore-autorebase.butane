@@ -8,23 +8,30 @@ passwd:
       password_hash: $y$j9T$DqkwcY33CbPGjlpMc5n62.$dWNOvnSoZD6PbmhCg54M9aKR4M63/hSQiD61vXa/h5.
 storage:
   disks:
-    - device: /dev/vda  # Adjust to your actual disk device
-      partitions:
-        - label: root
-          number: 1
-          size_mib: 12000  # Size of the root partition in MiB, adjust as needed
-        - label: var
-          number: 2
-          size_mib: 0  # Size of the /var partition in MiB, adjust as needed
-  filesystems:
-    - path: /
-      device: /dev/disk/by-partlabel/root
-      format: xfs
+  - # The link to the block device the OS was booted from.
+    device: /dev/disk/by-id/coreos-boot-disk
+    # We do not want to wipe the partition table since this is the primary
+    # device.
+    wipe_table: false
+    partitions:
+    - number: 4
       label: root
+      # Allocate at least 8 GiB to the rootfs. See NOTE above about this.
+      size_mib: 12000
+      resize: true
+    - size_mib: 0
+      # We assign a descriptive label to the partition. This is important
+      # for referring to it in a device-agnostic way in other parts of the
+      # configuration.
+      label: var
+  filesystems:
     - path: /var
       device: /dev/disk/by-partlabel/var
+      # We can select the filesystem we'd like.
       format: ext4
-      label: var
+      # Ask Butane to generate a mount unit for us so that this filesystem
+      # gets mounted in the real root.
+      with_mount_unit: true
   directories:
     - path: /etc/ucore-autorebase
       mode: 0754
